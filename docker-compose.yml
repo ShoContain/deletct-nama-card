@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+    server:
+        build:
+            context: .
+            dockerfile: server/Dockerfile
+        volumes: 
+            - ./server/:/server:delegated
+        ports:
+            - target: 5000
+              published: ${SERVER_PORT:-5000}
+              protocol: tcp
+              mode: host
+        tty: true
+        working_dir: /server
+       # command: FLASK_APP=app.py flask run -h 0.0.0.0
+ 
