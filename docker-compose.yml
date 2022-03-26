@@ -13,5 +13,17 @@ services:
               mode: host
         tty: true
         working_dir: /server
-       # command: FLASK_APP=app.py flask run -h 0.0.0.0
+    front:
+        build:
+            context: .
+            dockerfile: front/Dockerfile
+        volumes: 
+            - ./front/:/front:delegated
+        ports:
+            - target: 3000
+              published: ${FRONT_PORT:-3000}
+              protocol: tcp
+              mode: host
+        tty: true
+        working_dir: /front  
  
