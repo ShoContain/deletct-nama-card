@@ -8,3 +8,5 @@ server:
 	docker compose exec server bash
 front:
 	docker compose exec front sh
+
+.PHONY: server front
