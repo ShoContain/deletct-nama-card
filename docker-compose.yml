@@ -4,26 +4,18 @@ services:
         build:
             context: .
             dockerfile: server/Dockerfile
-        volumes: 
-            - ./server/:/server:delegated
         ports:
             - target: 5000
               published: ${SERVER_PORT:-5000}
               protocol: tcp
               mode: host
-        tty: true
-        working_dir: /server
     front:
         build:
             context: .
             dockerfile: front/Dockerfile
-        volumes: 
-            - ./front/:/front:delegated
         ports:
             - target: 3000
               published: ${FRONT_PORT:-3000}
               protocol: tcp
               mode: host
-        tty: true
-        working_dir: /front  
  

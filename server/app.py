@@ -1,6 +1,6 @@
 import os
 from uuid import uuid4
-from flask import Flask, request, make_response, jsonify
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)

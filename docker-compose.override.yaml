@@ -1,0 +1,12 @@
+version: "3.8"
+services:
+  server:
+    volumes:
+      - ./server:/server:delegated
+    tty: true
+    working_dir: /server
+  front:
+    volumes:
+      - ./front:/front:delegated
+    tty: true
+    working_dir: /front

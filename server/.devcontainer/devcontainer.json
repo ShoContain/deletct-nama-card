@@ -1,22 +1,10 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.224.3/containers/python-3
 {
-	"name": "Detect Card Name",
-	"dockerComposeFile": [
-		"../docker-compose.yml"
-	],
-	"service": "server", 
-	"workspaceFolder": "/server", 
 	"extensions": [
-		"ms-python.python",
-		"ms-python.vscode-pylance",
-		"matangover.mypy"
+	  "ms-python.python"
 	],
-	"settings": {
-		"python.linting.enabled": true,
-		"python.linting.pylintEnabled": false,
-		"python.linting.flake8Enabled": true,
-		"python.linting.lintOnSave": true,
-		"editor.formatOnSave": true,
-	}
+	"postCreateCommand": [
+	  "pip install -r requirements/dev.txt"
+	]
 }
