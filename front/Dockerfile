@@ -1,4 +1,4 @@
 FROM node:17.8.0-alpine
-COPY front/ /front
+COPY . /front
 WORKDIR /front
 RUN npm install --only=prod

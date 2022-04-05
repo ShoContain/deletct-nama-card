@@ -1,16 +1,18 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
-// https://github.com/microsoft/vscode-dev-containers/tree/v0.224.3/containers/python-3
 {
-	"name": "Detect Card Name",
+	"name": "opencv",
 	"dockerComposeFile": [
-		"../docker-compose.yml"
+		"../../docker-compose.yml"
 	],
-	"service": "front", 
-	"workspaceFolder": "/front", 
+	"service": "front",
+	"workspaceFolder": "/front",
 	"extensions": [
+		"dbaeumer.vscode-eslint",
+		"esbenp.prettier-vscode",
 		"johnsoncodehk.volar",
 	],
 	"settings": {
-		"editor.formatOnSave": true,
-	}
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	  },
+	"postAttachCommand": "npm install",
+	"shutdownAction": "stopCompose"
 }

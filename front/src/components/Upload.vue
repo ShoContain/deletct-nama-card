@@ -16,7 +16,7 @@ const handlePreview: UploadProps["onPreview"] = (uploadFile) => {
         "http://localhost:5010/static/task/" +
         uploadFile.response.result.image.task_id +
         "/" +
-        uploadFile.response.result.image.id + 
+        uploadFile.response.result.image.id +
         ".jpg"
     dialogVisible.value = true
 }
