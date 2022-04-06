@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue"
 import { ElMessageBox } from "element-plus"
-import type { UploadProps, UploadUserFile } from "element-plus"
+import type { UploadProps, UploadUserFile, UploadFile } from "element-plus"
 
 const fileList = ref<UploadUserFile[]>([])
 const dialogVisible = ref(false)
@@ -11,7 +11,9 @@ const handleRemove: UploadProps["onRemove"] = (file, uploadFiles) => {
     console.log(file, uploadFiles)
 }
 
-const handlePreview: UploadProps["onPreview"] = (uploadFile) => {
+const handlePreview: UploadProps["onPreview"] = (
+    uploadFile: UploadFile.response
+) => {
     dialogImageUrl.value =
         "http://localhost:5010/static/task/" +
         uploadFile.response.result.image.task_id +

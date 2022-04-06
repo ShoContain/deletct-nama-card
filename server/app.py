@@ -1,7 +1,11 @@
 import os
+from typing import Any
 from uuid import uuid4
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import cv2
+import numpy as np
+
 app = Flask(__name__)
 CORS(app)
 app.config['MAX_CONTENT_LENGTH'] = 1 * 1024 * 1024  # 1MB
@@ -15,7 +19,7 @@ def home() -> str:
 
 
 @ app.route('/upload_image', methods=['POST'])
-def upload_multipart():
+def upload_multipart() -> Any:
     # <input type="file" name="uploadFile">
     if 'uploadFile' not in request.files:
         return jsonify({'error': 'uploadFile is required.'}), 404
@@ -29,7 +33,13 @@ def upload_multipart():
     save_path = os.path.join(TASK_DIR, task_id, f"{id}.jpg")
 
     os.makedirs(os.path.dirname(save_path))
-    file.save(save_path)
+    # file.save(save_path)
+    # 画像をデコード
+    img = cv2.imdecode(np.fromstring(
+        file.read(), np.uint8), cv2.IMREAD_UNCHANGED)
+
+    print(img)
+    cv2.imwrite(save_path, img)
     return jsonify({
         "result": {
             "image": {
@@ -39,5 +49,7 @@ def upload_multipart():
         }
     })
 
-# def grayscale():
-#     request_path #uuid/original.jpg
+
+def grayscale() -> Any:
+    data = request.json
+    # {task_id:XXX,id:XXX}
