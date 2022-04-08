@@ -1,7 +1,7 @@
 {
-	"name": "opencv",
+	"name": "opencv front",
 	"dockerComposeFile": [
-		"../../docker-compose.yml"
+		"../../docker-compose.yml",
 	],
 	"service": "front",
 	"workspaceFolder": "/front",
