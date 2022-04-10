@@ -59,11 +59,11 @@ def upload_multipart() -> Any:
 
 @ app.route('/gray_scale', methods=['POST'])
 def grayscale() -> Any:
-    data = request.json
+    data = request.get_json()
+    task_id = data['task_id']
+    path = image_path(task_id, data['id'])
 
-    task_id = data.get('task_id', "")
-    path = image_path(task_id, data.get('id', ""))
-    if not os.path.exists(os):
+    if not os.path.exists(path):
         return error_res("File Not Exists")
 
     img = cv2.imread(path)
@@ -71,6 +71,7 @@ def grayscale() -> Any:
 
     id = str(uuid4())
     write_path = image_path(task_id, id)
+
     cv2.imwrite(write_path, img_gray)
     return jsonify({
         "result": {
