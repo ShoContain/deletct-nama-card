@@ -1,8 +1,9 @@
 import axios, { AxiosInstance } from "axios"
 import { ElMessage } from 'element-plus'
+const baseUrl = import.meta.env.VITE_API_URL
 
 const apiClient: AxiosInstance = axios.create({
-    baseURL: "http://localhost:5010",
+    baseURL: baseUrl,
     // リクエストヘッダ
     headers: {
         "Content-type": "application/json",

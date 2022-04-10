@@ -15,6 +15,8 @@ const images = ref<Image[]>([])
 
 const loading = ref<boolean>(false)
 
+const uploadAPIUrl = `${import.meta.env.VITE_API_URL}/upload_image`
+
 const handleRemove: UploadProps["onRemove"] = (file, uploadFiles) => {
     console.log(file, uploadFiles)
 }
@@ -25,7 +27,7 @@ const handleUploadSuccess: UploadProps["onSuccess"] = (response) => {
     const image = {
         task_id: task_id,
         id: id,
-        url: `http://localhost:5010/static/task/${task_id}/${id}.jpg`,
+        url: `${import.meta.env.VITE_API_URL}/static/task/${task_id}/${id}.jpg`,
     }
     images.value.push(image)
 }
@@ -39,7 +41,9 @@ const grayScale = async (id: string) => {
         const task_id = res.result.image.task_id
         if (gray_id && task_id) {
             image.gray_id = gray_id
-            image.gray_url = `http://localhost:5010/static/task/${task_id}/${gray_id}.jpg`
+            image.gray_url = `${
+                import.meta.env.VITE_API_URL
+            }/static/task/${task_id}/${gray_id}.jpg`
         }
     } catch (e) {
         console.log(e)
@@ -50,7 +54,7 @@ const grayScale = async (id: string) => {
 
 const grayImageExists = (id: string) => {
     const image = images.value.find((v) => v.id === id)
-    if ( 'gray_url' in image  && image.gray_url !== null) {
+    if ("gray_url" in image && image.gray_url !== null) {
         return true
     } else {
         return false
@@ -60,7 +64,7 @@ const grayImageExists = (id: string) => {
 
 <template>
     <el-upload
-        action="http://localhost:5010/upload_image"
+        :action="uploadAPIUrl"
         name="uploadFile"
         :on-remove="handleRemove"
         :on-success="handleUploadSuccess"
@@ -102,6 +106,6 @@ const grayImageExists = (id: string) => {
 .image {
     width: 100%;
     display: block;
-    margin:20px 
+    margin: 20px;
 }
 </style>
