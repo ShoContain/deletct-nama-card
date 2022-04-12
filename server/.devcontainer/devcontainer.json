@@ -5,10 +5,10 @@
 	],
 	"service": "server",
 	"workspaceFolder": "/server",
+	"postCreateCommand": [
+	  "pip install -r requirements/dev.txt"
+	],
 	"extensions": [
 	  "ms-python.python"
 	],
-	"postCreateCommand": [
-	  "pip install -r requirements/dev.txt"
-	]
 }

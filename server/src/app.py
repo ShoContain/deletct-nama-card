@@ -6,7 +6,7 @@ from flask_cors import CORS
 import cv2
 import numpy as np
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../static')
 CORS(app)
 app.config["MAX_CONTENT_LENGTH"] = 1 * 1024 * 1024  # 1MB
 

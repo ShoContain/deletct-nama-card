@@ -32,7 +32,7 @@ const handleUploadSuccess: UploadProps["onSuccess"] = (response) => {
     images.value.push(image)
 }
 
-const grayScale = async (id: string) => {
+const handleGrayScale = async (id: string) => {
     let image = images.value.find((v) => v.id === id)
     loading.value = true
     try {
@@ -87,7 +87,7 @@ const grayImageExists = (id: string) => {
                             type="text"
                             v-loading="loading"
                             :disabled="grayImageExists(image.id)"
-                            @click="grayScale(image.id)"
+                            @click="handleGrayScale(image.id)"
                             >グレースケール</el-button
                         >
                     </div>
@@ -106,6 +106,6 @@ const grayImageExists = (id: string) => {
 .image {
     width: 100%;
     display: block;
-    margin: 20px;
+    padding: 20px 0;
 }
 </style>
