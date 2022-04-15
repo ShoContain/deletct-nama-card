@@ -34,27 +34,25 @@ const handleUploadSuccess: UploadProps["onSuccess"] = (response) => {
 
 const handleGrayScale = async (id: string) => {
     let image = images.value.find((v) => v.id === id)
-    loading.value = true
-    try {
-        const res = await toGray(image)
-        const gray_id = res.result.image.id
-        const task_id = res.result.image.task_id
-        if (gray_id && task_id) {
-            image.gray_id = gray_id
-            image.gray_url = `${
-                import.meta.env.VITE_API_URL
-            }/static/task/${task_id}/${gray_id}.jpg`
+    if (image) {
+        loading.value = true
+        try {
+            const res = await toGray(image)
+            image.gray_id = res.result.image.id
+            image.gray_url = `${import.meta.env.VITE_API_URL}/static/task/${
+                res.result.image.task_id
+            }/${res.result.image.id}.jpg`
+        } catch (e) {
+            console.log(e)
+        } finally {
+            loading.value = false
         }
-    } catch (e) {
-        console.log(e)
-    } finally {
-        loading.value = false
     }
 }
 
 const grayImageExists = (id: string) => {
-    const image = images.value.find((v) => v.id === id)
-    if ("gray_url" in image && image.gray_url !== null) {
+    const image = images.value.find((v) => v.id === id && v.gray_url !== null)
+    if (image) {
         return true
     } else {
         return false
