@@ -13,6 +13,5 @@
 	"settings": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	  },
-	"postCreateCommand": "npm install",
 	"shutdownAction": "stopCompose"
 }
