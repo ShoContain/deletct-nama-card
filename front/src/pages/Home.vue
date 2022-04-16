@@ -28,6 +28,8 @@ const handleUploadSuccess: UploadProps["onSuccess"] = (response) => {
         task_id: task_id,
         id: id,
         url: `${import.meta.env.VITE_API_URL}/static/task/${task_id}/${id}.jpg`,
+        gray_id: '',
+        gray_url: '',
     }
     images.value.push(image)
 }
@@ -51,7 +53,7 @@ const handleGrayScale = async (id: string) => {
 }
 
 const grayImageExists = (id: string) => {
-    const image = images.value.find((v) => v.id === id && v.gray_url !== null)
+    const image = images.value.find((v) => v.id === id && v.gray_url !== '')
     if (image) {
         return true
     } else {

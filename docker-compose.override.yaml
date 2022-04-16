@@ -5,8 +5,10 @@ services:
       - ./server:/server:delegated
     tty: true
     working_dir: /server
+    command: make start
   front:
     volumes:
       - ./front:/front:delegated
     tty: true
     working_dir: /front
+    command: npm run dev
