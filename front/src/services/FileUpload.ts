@@ -20,7 +20,7 @@ export function toGray(data: Image): Promise<any> {
 export function binarize(data: Image): Promise<any> {
     const postData = {
         task_id: data.task_id,
-        id:data.gray_id,
+        id:data.id,
         threshold:data.threshold
     }
     return http.post("/binarize", postData)

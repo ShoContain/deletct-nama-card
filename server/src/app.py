@@ -87,7 +87,7 @@ def binarize() -> Any:
     if not os.path.exists(path):
         return error_res("File Not Exists")
 
-    img = cv2.imread(path,cv2.COLOR_BGR2GRAY)
+    img = cv2.imread(path,cv2.IMREAD_GRAYSCALE)
 
     threshold = int(data.get('threshold', 0))
     if threshold == 0:
@@ -110,3 +110,7 @@ def binarize() -> Any:
             }
         }
     })
+
+# @app.route("/face_detect", methods=["POST"])
+# def face_detect():
+    
