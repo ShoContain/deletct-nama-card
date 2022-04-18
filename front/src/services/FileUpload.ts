@@ -6,8 +6,22 @@ type Image = {
     url: string
     gray_id?: string
     gray_url?: string
+    threshold?: number
 }
 
 export function toGray(data: Image): Promise<any> {
-    return http.post("/gray_scale", data)
+    const postData = {
+        task_id: data.task_id,
+        id:data.id
+    }
+    return http.post("/gray_scale", postData)
+}
+
+export function binarize(data: Image): Promise<any> {
+    const postData = {
+        task_id: data.task_id,
+        id:data.gray_id,
+        threshold:data.threshold
+    }
+    return http.post("/binarize", postData)
 }

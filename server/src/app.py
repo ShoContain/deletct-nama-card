@@ -22,7 +22,7 @@ def error_res(message: str) -> Tuple[Any, int]:
     return jsonify({"error": message}), 400
 
 
-@ app.route("/upload_image", methods=["POST"])
+@app.route("/upload_image", methods=["POST"])
 def upload_multipart() -> Any:
     if "uploadFile" not in request.files:
         return jsonify({"error": "uploadFile is required."}), 400
@@ -52,7 +52,7 @@ def upload_multipart() -> Any:
     })
 
 
-@ app.route("/gray_scale", methods=["POST"])
+@app.route("/gray_scale", methods=["POST"])
 def grayscale() -> Any:
     data = request.get_json()
     task_id = data["task_id"]
@@ -73,6 +73,40 @@ def grayscale() -> Any:
             "image": {
                 "task_id": task_id,
                 "id": id
+            }
+        }
+    })
+
+
+@app.route("/binarize", methods=["POST"])
+def binarize() -> Any:
+    data = request.json
+    task_id = data.get('task_id')
+    path = image_path(task_id, data.get('id'))
+
+    if not os.path.exists(path):
+        return error_res("File Not Exists")
+
+    img = cv2.imread(path,cv2.COLOR_BGR2GRAY)
+
+    threshold = int(data.get('threshold', 0))
+    if threshold == 0:
+        threshold, img_thresh = cv2.threshold(img, 0, 255, cv2.THRESH_OTSU)
+    else:
+        _, img_thresh = cv2.threshold(img, threshold, 255, cv2.THRESH_BINARY)
+
+    id = str(uuid4())
+    write_path = image_path(task_id, id)
+
+    cv2.imwrite(write_path, img_thresh)
+    return jsonify({
+        "result": {
+            "image": {
+                "task_id": task_id,
+                "id": id
+            },
+            "params": {
+                "threshold": threshold
             }
         }
     })
