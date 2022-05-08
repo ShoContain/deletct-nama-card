@@ -1,6 +1,7 @@
 import os
 from typing import Any, Tuple
 from uuid import uuid4
+from cv2 import Mat
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import cv2
@@ -54,73 +55,8 @@ def upload_multipart() -> Any:
     })
 
 
-@app.route("/gray_scale", methods=["POST"])
-def grayscale() -> Any:
+def filter_api(action):
     data = request.get_json()
-    task_id = data["task_id"]
-    path = image_path(task_id, data["id"])
-
-    if not os.path.exists(path):
-        return error_res("File Not Exists")
-
-    img = cv2.imread(path)
-    img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-    id = str(uuid4())
-    write_path = image_path(task_id, id)
-
-    cv2.imwrite(write_path, img_gray)
-    return jsonify({
-        "result": {
-            "image": {
-                "task_id": task_id,
-                "id": id
-            }
-        }
-    })
-
-
-@app.route("/binarize", methods=["POST"])
-def binarize() -> Any:
-    data = request.json
-    task_id = data.get('task_id')
-    path = image_path(task_id, data.get('id'))
-
-    if not os.path.exists(path):
-        return error_res("File Not Exists")
-
-    img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
-
-    threshold = int(data.get('threshold', 0))
-    if threshold == 0:
-        threshold, img_thresh = cv2.threshold(img, 0, 255, cv2.THRESH_OTSU)
-    else:
-        _, img_thresh = cv2.threshold(img, threshold, 255, cv2.THRESH_BINARY)
-
-    id = str(uuid4())
-    write_path = image_path(task_id, id)
-
-    cv2.imwrite(write_path, img_thresh)
-    return jsonify({
-        "result": {
-            "image": {
-                "task_id": task_id,
-                "id": id
-            },
-            "params": {
-                "threshold": threshold
-            }
-        }
-    })
-
-
-face_cascade = cv2.CascadeClassifier(os.path.join(
-    SRC_DIR, 'haarcascade_frontalface_default.xml'))
-
-
-@app.route("/face_detection", methods=["POST"])
-def face_detection() -> Any:
-    data = request.json
     task_id = data.get('task_id', '')
     path = image_path(task_id, data.get('id', ''))
 
@@ -128,31 +64,12 @@ def face_detection() -> Any:
         return error_res("File Not Exists")
 
     img = cv2.imread(path)
-    img_with_rect = img.copy()
-    gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-    faces = face_cascade.detectMultiScale(gray_img, 1.3, 5)
-    face_data = []
-    for (x, y, w, h) in faces:
-        cv2.rectangle(img_with_rect, (x, y), (x+w, y+h), (255, 0, 0), 2)
-
-        face_img = img[y:y+h, x:x+w]
-        id = str(uuid4())
-        write_path = image_path(task_id, id)
-        cv2.imwrite(write_path, face_img)
-        face_data.append({
-            "task_id": task_id,
-            "id": id,
-            "x": int(x),
-            "y": int(y),
-            "width": int(w),
-            "height": int(h),
-        })
+    img, params = action(data, img)
 
     id = str(uuid4())
     write_path = image_path(task_id, id)
+    cv2.imwrite(write_path, img)
 
-    cv2.imwrite(write_path, img_with_rect)
     return jsonify({
         "result": {
             "image": {
@@ -161,8 +78,65 @@ def face_detection() -> Any:
                 "x": 0,
                 "y": 0,
                 "width": img.shape[1],
-                "height": img.shape[0]
+                "height": img.shape[0],
             },
-            "faces": face_data
+            "params": params
         }
     })
+
+
+@app.route("/gray_scale", methods=["POST"])
+def grayscale() -> Any:
+    def gray(data,img: Mat) -> Any:
+        return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), None
+
+    return filter_api(gray)
+
+
+@app.route("/binarize", methods=["POST"])
+def binarize() -> Any:
+    def thre(data, img: Mat) -> Any:
+        threshold = int(data.get('threshold', 0))
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        if threshold == 0:
+            threshold, img = cv2.threshold(img, 0, 255, cv2.THRESH_OTSU)
+        else:
+            _, img = cv2.threshold(img, threshold, 255, cv2.THRESH_BINARY)
+
+        return img, {"threshold": threshold}
+
+    return filter_api(thre)
+
+
+face_cascade = cv2.CascadeClassifier(os.path.join(
+    SRC_DIR, 'haarcascade_frontalface_default.xml'))
+
+
+@app.route("/face_detection", methods=["POST"])
+def face_detection() -> Any:
+    def fd(data, img: Mat) -> Any:
+        task_id = data.get('task_id', '')
+        img_with_rect = img.copy()
+        gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+        faces = face_cascade.detectMultiScale(gray_img, 1.3, 5)
+        face_data = []
+        for (x, y, w, h) in faces:
+            cv2.rectangle(img_with_rect, (x, y), (x+w, y+h), (255, 0, 0), 2)
+
+            face_img = img[y:y+h, x:x+w]
+            id = str(uuid4())
+            write_path = image_path(task_id, id)
+            cv2.imwrite(write_path, face_img)
+            face_data.append({
+                "task_id": task_id,
+                "id": id,
+                "x": int(x),
+                "y": int(y),
+                "width": int(w),
+                "height": int(h),
+            })
+        return img_with_rect, {
+            "faces": face_data
+        }
+    return filter_api(fd)
