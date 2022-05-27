@@ -126,7 +126,7 @@ const handleBinarize = async (id: string) => {
                         </el-form>
                     </div>
                 </template>
-                <img v-if="image.gray_url" :src="image.url" class="image" />
+                <img v-if="image.url" :src="image.url" class="image" />
                 <img
                     v-if="image.gray_url"
                     :src="image.gray_url"
@@ -148,6 +148,6 @@ const handleBinarize = async (id: string) => {
 .image {
     display: inline-block;
     margin: 0 20px;
-    width: 30%;
+    width: 200px;
 }
 </style>
