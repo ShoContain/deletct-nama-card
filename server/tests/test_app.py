@@ -19,7 +19,7 @@ TEST_DIR = os.path.join(os.path.dirname(
 def scope_class() -> None:
     if os.path.exists(TEST_DIR):
         shutil.rmtree(TEST_DIR)
-
+    yield
 
 def copy_image(threshold: Union[int, None] = None) -> Any:
     path = image_path(task_id, id)

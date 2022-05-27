@@ -1,5 +1,5 @@
 import os
-from typing import Any, Tuple
+from typing import Any, Tuple, Callable, Tuple, Optional
 from uuid import uuid4
 from cv2 import Mat
 from flask import Flask, request, jsonify
@@ -55,7 +55,8 @@ def upload_multipart() -> Any:
     })
 
 
-def filter_api(action):
+def filter_api(action: Callable[[dict[str, Any], np.ndarray],
+                                Tuple[np.ndarray, Optional[dict[str, Any]]]]) -> Any:
     data = request.get_json()
     task_id = data.get('task_id', '')
     path = image_path(task_id, data.get('id', ''))
@@ -87,7 +88,7 @@ def filter_api(action):
 
 @app.route("/gray_scale", methods=["POST"])
 def grayscale() -> Any:
-    def gray(data,img: Mat) -> Any:
+    def gray(data: dict[str, Any], img: np.ndarray) -> Tuple[np.ndarray, None]:
         return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), None
 
     return filter_api(gray)
@@ -95,7 +96,7 @@ def grayscale() -> Any:
 
 @app.route("/binarize", methods=["POST"])
 def binarize() -> Any:
-    def thre(data, img: Mat) -> Any:
+    def thre(data: dict[str, Any], img: np.ndarray) -> Tuple[np.ndarray, dict[str, Any]]:
         threshold = int(data.get('threshold', 0))
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         if threshold == 0:
@@ -114,7 +115,7 @@ face_cascade = cv2.CascadeClassifier(os.path.join(
 
 @app.route("/face_detection", methods=["POST"])
 def face_detection() -> Any:
-    def fd(data, img: Mat) -> Any:
+    def fd(data: dict[str, Any], img: np.ndarray) -> Tuple[np.ndarray, dict[str, Any]]:
         task_id = data.get('task_id', '')
         img_with_rect = img.copy()
         gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
