@@ -8,13 +8,12 @@
 	"extensions": [
 		"dbaeumer.vscode-eslint",
 		"esbenp.prettier-vscode",
-		"johnsoncodehk.volar",
+		"johnsoncodehk.volar"
 	],
 	"settings": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	  },
 	  "postCreateCommand": [
 		"npm install"
-	  ],
-	"shutdownAction": "stopCompose"
+	  ]
 }
